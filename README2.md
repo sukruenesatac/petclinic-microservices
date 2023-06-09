@@ -649,6 +649,14 @@ git push origin dev
 ## MSP 10 - Configure Jenkins Server for Project
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+* Launch the jenkins server using `msp-9-jenkins-server-tf-template` folder.
+
+* After launch we will go on jenkins server. So, clone the project repo to the jenkins server.
+
+```bash
+git clone https://[github username]:[your-token]@github.com/[your-git-account]/[your-repo-name-petclinic-microservices-with-db.git
+```
+
 * Get the initial administrative password.
 
 ``` bash
@@ -787,7 +795,7 @@ python3 -m http.server # for python 3+
 ## MSP 12 - Prepare Continuous Integration (CI) Pipeline
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-* Create `feature/msp-13` branch from `dev`.
+* Create `feature/msp-12` branch from `dev`.
 
 ``` bash
 git checkout dev
@@ -861,7 +869,7 @@ git push origin dev
 ## MSP 13 - Prepare and Implement Selenium Tests
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-* Create `feature/msp-10` branch from `dev`.
+* Create `feature/msp-13` branch from `dev`.
 
 ``` bash
 git checkout dev
@@ -1096,437 +1104,13 @@ git branch feature/msp-15
 git checkout feature/msp-15
 ```
 
-- Create a folder for roles of master and worker nodes with the name of `IAM` under the `infrastructure/dev-k8s-terraform/modules` folder.
-
-```bash
-mkdir -p infrastructure/dev-k8s-terraform/modules/IAM
-```
-
-- Create iam policy file for the master node with the name of `policy_for_master.json`  under the `infrastructure/dev-k8s-terraform/modules/IAM`.
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:DescribeTags",
-        "ec2:DescribeInstances",
-        "ec2:DescribeRegions",
-        "ec2:DescribeRouteTables",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeVolumes",
-        "ec2:CreateSecurityGroup",
-        "ec2:CreateTags",
-        "ec2:CreateVolume",
-        "ec2:ModifyInstanceAttribute",
-        "ec2:ModifyVolume",
-        "ec2:AttachVolume",
-        "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:CreateRoute",
-        "ec2:DeleteRoute",
-        "ec2:DeleteSecurityGroup",
-        "ec2:DeleteVolume",
-        "ec2:DetachVolume",
-        "ec2:RevokeSecurityGroupIngress",
-        "ec2:DescribeVpcs",
-        "elasticloadbalancing:AddTags",
-        "elasticloadbalancing:AttachLoadBalancerToSubnets",
-        "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
-        "elasticloadbalancing:CreateLoadBalancer",
-        "elasticloadbalancing:CreateLoadBalancerPolicy",
-        "elasticloadbalancing:CreateLoadBalancerListeners",
-        "elasticloadbalancing:ConfigureHealthCheck",
-        "elasticloadbalancing:DeleteLoadBalancer",
-        "elasticloadbalancing:DeleteLoadBalancerListeners",
-        "elasticloadbalancing:DescribeLoadBalancers",
-        "elasticloadbalancing:DescribeLoadBalancerAttributes",
-        "elasticloadbalancing:DetachLoadBalancerFromSubnets",
-        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-        "elasticloadbalancing:ModifyLoadBalancerAttributes",
-        "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-        "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
-        "elasticloadbalancing:AddTags",
-        "elasticloadbalancing:CreateListener",
-        "elasticloadbalancing:CreateTargetGroup",
-        "elasticloadbalancing:DeleteListener",
-        "elasticloadbalancing:DeleteTargetGroup",
-        "elasticloadbalancing:DescribeListeners",
-        "elasticloadbalancing:DescribeLoadBalancerPolicies",
-        "elasticloadbalancing:DescribeTargetGroups",
-        "elasticloadbalancing:DescribeTargetHealth",
-        "elasticloadbalancing:ModifyListener",
-        "elasticloadbalancing:ModifyTargetGroup",
-        "elasticloadbalancing:RegisterTargets",
-        "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
-        "iam:CreateServiceLinkedRole",
-        "kms:DescribeKey",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:PutImage",
-        "ecr:InitiateLayerUpload",
-        "ecr:UploadLayerPart",
-        "ecr:CompleteLayerUpload",
-        "ecr:DescribeRepositories",
-        "ecr:GetRepositoryPolicy",
-        "ecr:ListImages",
-        "ecr:DeleteRepository",
-        "ecr:BatchDeleteImage",
-        "ecr:SetRepositoryPolicy",
-        "ecr:DeleteRepositoryPolicy",
-        "s3:ListAccessPointsForObjectLambda",
-        "s3:GetObjectVersionTagging",
-        "s3:GetStorageLensConfigurationTagging",
-        "s3:GetObjectAcl",
-        "s3:GetBucketObjectLockConfiguration",
-        "s3:GetIntelligentTieringConfiguration",
-        "s3:GetObjectVersionAcl",
-        "s3:GetBucketPolicyStatus",
-        "s3:GetObjectRetention",
-        "s3:GetBucketWebsite",
-        "s3:GetJobTagging",
-        "s3:ListJobs",
-        "s3:GetMultiRegionAccessPoint",
-        "s3:GetObjectAttributes",
-        "s3:GetObjectLegalHold",
-        "s3:GetBucketNotification",
-        "s3:DescribeMultiRegionAccessPointOperation",
-        "s3:GetReplicationConfiguration",
-        "s3:ListMultipartUploadParts",
-        "s3:GetObject",
-        "s3:DescribeJob",
-        "s3:GetAnalyticsConfiguration",
-        "s3:GetObjectVersionForReplication",
-        "s3:GetAccessPointForObjectLambda",
-        "s3:GetStorageLensDashboard",
-        "s3:GetLifecycleConfiguration",
-        "s3:GetAccessPoint",
-        "s3:GetInventoryConfiguration",
-        "s3:GetBucketTagging",
-        "s3:GetAccessPointPolicyForObjectLambda",
-        "s3:GetBucketLogging",
-        "s3:ListBucketVersions",
-        "s3:ListBucket",
-        "s3:GetAccelerateConfiguration",
-        "s3:GetObjectVersionAttributes",
-        "s3:GetBucketPolicy",
-        "s3:GetEncryptionConfiguration",
-        "s3:GetObjectVersionTorrent",
-        "s3:GetBucketRequestPayment",
-        "s3:GetAccessPointPolicyStatus",
-        "s3:GetObjectTagging",
-        "s3:GetMetricsConfiguration",
-        "s3:GetBucketOwnershipControls",
-        "s3:GetBucketPublicAccessBlock",
-        "s3:GetMultiRegionAccessPointPolicyStatus",
-        "s3:ListBucketMultipartUploads",
-        "s3:GetMultiRegionAccessPointPolicy",
-        "s3:GetAccessPointPolicyStatusForObjectLambda",
-        "s3:ListAccessPoints",
-        "s3:GetBucketVersioning",
-        "s3:ListMultiRegionAccessPoints",
-        "s3:GetBucketAcl",
-        "s3:GetAccessPointConfigurationForObjectLambda",
-        "s3:ListStorageLensConfigurations",
-        "s3:GetObjectTorrent",
-        "s3:GetStorageLensConfiguration",
-        "s3:GetAccountPublicAccessBlock",
-        "s3:ListAllMyBuckets",
-        "s3:GetBucketCORS",
-        "s3:GetBucketLocation",
-        "s3:GetAccessPointPolicy",
-        "s3:GetObjectVersion"
-        ],
-        "Resource": [
-          "*"
-        ]
-      }
-    ]
-}
-```
-
-- Create iam policy file for the worker node with the name of `policy_for_worker.json`  under the `infrastructure/dev-k8s-terraform/modules/IAM`.
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateSnapshot",
-        "ec2:AttachVolume",
-        "ec2:DetachVolume",
-        "ec2:ModifyVolume",
-        "ec2:DescribeAvailabilityZones",
-        "ec2:DescribeInstances",
-        "ec2:DescribeSnapshots",
-        "ec2:DescribeTags",
-        "ec2:DescribeVolumes",
-        "ec2:DescribeVolumesModifications",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:PutImage",
-        "ecr:InitiateLayerUpload",
-        "ecr:UploadLayerPart",
-        "ecr:CompleteLayerUpload",
-        "ecr:DescribeRepositories",
-        "ecr:GetRepositoryPolicy",
-        "ecr:ListImages",
-        "ecr:DeleteRepository",
-        "ecr:BatchDeleteImage",
-        "ecr:SetRepositoryPolicy",
-        "ecr:DeleteRepositoryPolicy"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateTags"
-      ],
-      "Resource": [
-        "arn:aws:ec2:*:*:volume/*",
-        "arn:aws:ec2:*:*:snapshot/*"
-      ],
-      "Condition": {
-        "StringEquals": {
-          "ec2:CreateAction": [
-            "CreateVolume",
-            "CreateSnapshot"
-          ]
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DeleteTags"
-      ],
-      "Resource": [
-        "arn:aws:ec2:*:*:volume/*",
-        "arn:aws:ec2:*:*:snapshot/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateVolume"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "aws:RequestTag/ebs.csi.aws.com/cluster": "true"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateVolume"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "aws:RequestTag/CSIVolumeName": "*"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DeleteVolume"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "ec2:ResourceTag/CSIVolumeName": "*"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DeleteVolume"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "ec2:ResourceTag/ebs.csi.aws.com/cluster": "true"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DeleteSnapshot"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "ec2:ResourceTag/CSIVolumeSnapshotName": "*"
-        }
-      }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DeleteSnapshot"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "ec2:ResourceTag/ebs.csi.aws.com/cluster": "true"
-        }
-      }
-    }
-  ]
-}
-```
-
-- Create a terraform file for roles with the name of `variables.tf`  under the `infrastructure/dev-k8s-terraform/modules/IAM`.
-
-```go
-variable "master-role-policy" {
-  default = "petclinic_policy_for_master_role"
-}
-
-variable "worker-role-policy" {
-  default = "petclinic_policy_for_worker_role"
-}
-
-variable "master-role" {
-  default = "petclinic_role_master_k8s"
-}
-
-variable "worker-role" {
-  default = "petclinic_role_worker_k8s"
-}
-
-variable "master-role-attachment" {
-  default = "petclinic_attachment_for_master"
-}
-
-variable "worker-role-attachment" {
-  default = "petclinic_attachment_for_worker"
-}
-
-variable "profile_for_master" {
-  default = "petclinic_profile_for_master"
-}
-
-variable "profile_for_worker" {
-  default = "petclinic_profile_for_worker"
-}
-```
-
-- Create a terraform file for roles with the name of `roles.tf`  under the `infrastructure/dev-k8s-terraform/modules/IAM`.
-
-```go
-resource "aws_iam_policy" "policy_for_master_role" {
-  name        = var.master-role-policy
-  policy      = file("./modules/IAM/policy_for_master.json")
-}
-
-resource "aws_iam_policy" "policy_for_worker_role" {
-  name        = var.worker-role-policy
-  policy      = file("./modules/IAM/policy_for_worker.json")
-}
-
-resource "aws_iam_role" "role_for_master" {
-  name = var.master-role
-
-  # Terraform "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
-
-  tags = {
-    Name = "role_for_master"
-  }
-}
-
-resource "aws_iam_role" "role_for_worker" {
-  name = var.worker-role
-
-  # Terraform "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
-
-  tags = {
-    Name = "role_for_worker"
-  }
-}
-
-resource "aws_iam_policy_attachment" "attach_for_master" {
-  name       = var.master-role-attachment
-  roles      = [aws_iam_role.role_for_master.name]
-  policy_arn = aws_iam_policy.policy_for_master_role.arn
-}
-
-resource "aws_iam_policy_attachment" "attach_for_worker" {
-  name       = var.worker-role-attachment
-  roles      = [aws_iam_role.role_for_worker.name]
-  policy_arn = aws_iam_policy.policy_for_worker_role.arn
-}
-
-resource "aws_iam_instance_profile" "profile_for_master" {
-  name  = var.profile_for_master
-  role = aws_iam_role.role_for_master.name
-}
-
-resource "aws_iam_instance_profile" "profile_for_worker" {
-  name  = var.profile_for_worker
-  role = aws_iam_role.role_for_worker.name
-}
-
-output master_profile_name {
-  value       = aws_iam_instance_profile.profile_for_master.name
-}
-
-output worker_profile_name {
-  value       = aws_iam_instance_profile.profile_for_worker.name
-}
-```
+- Create a folder for kubernetes infrastructure with the name of `dev-k8s-terraform` under the `infrastructure` folder.
 
 - Prepare a terraform file for kubernetes Infrastructure consisting of 1 master, 2 Worker Nodes and save it as `main.tf` under the `infrastructure/dev-k8s-terraform`.
 
 ```go
 provider "aws" {
   region  = "us-east-1"
-}
-
-module "iam" {
-  source = "./modules/IAM"
 }
 
 variable "sec-gr-mutual" {
@@ -1548,18 +1132,35 @@ data "aws_vpc" "name" {
 resource "aws_security_group" "petclinic-mutual-sg" {
   name = var.sec-gr-mutual
   vpc_id = data.aws_vpc.name.id
+
+  ingress {
+    protocol = "tcp"
+    from_port = 10250
+    to_port = 10250
+    self = true
+  }
+
+    ingress {
+    protocol = "udp"
+    from_port = 8472
+    to_port = 8472
+    self = true
+  }
+
+    ingress {
+    protocol = "tcp"
+    from_port = 2379
+    to_port = 2380
+    self = true
+  }
+
 }
 
 resource "aws_security_group" "petclinic-kube-worker-sg" {
   name = var.sec-gr-k8s-worker
   vpc_id = data.aws_vpc.name.id
 
-  ingress {
-    protocol = "tcp"
-    from_port = 10250
-    to_port = 10250
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
+
   ingress {
     protocol = "tcp"
     from_port = 30000
@@ -1574,13 +1175,6 @@ resource "aws_security_group" "petclinic-kube-worker-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    protocol = "udp"
-    from_port = 8472
-    to_port = 8472
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
-  
   egress{
     protocol = "-1"
     from_port = 0
@@ -1589,7 +1183,6 @@ resource "aws_security_group" "petclinic-kube-worker-sg" {
   }
   tags = {
     Name = "kube-worker-secgroup"
-    "kubernetes.io/cluster/petclinicCluster" = "owned"
   }
 }
 
@@ -1603,88 +1196,83 @@ resource "aws_security_group" "petclinic-kube-master-sg" {
     to_port = 22
     cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress {
-    protocol = "tcp"
-    from_port = 80
-    to_port = 80
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
   ingress {
     protocol = "tcp"
     from_port = 6443
     to_port = 6443
     cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress {
-    protocol = "tcp"
-    from_port = 443
-    to_port = 443
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    protocol = "tcp"
-    from_port = 2380
-    to_port = 2380
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
-  ingress {
-    protocol = "tcp"
-    from_port = 2379
-    to_port = 2379
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
-  ingress {
-    protocol = "tcp"
-    from_port = 10250
-    to_port = 10250
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
+
   ingress {
     protocol = "tcp"
     from_port = 10257
     to_port = 10257
     self = true
   }
+
   ingress {
     protocol = "tcp"
     from_port = 10259
     to_port = 10259
     self = true
   }
+
   ingress {
     protocol = "tcp"
     from_port = 30000
     to_port = 32767
     cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress {
-    protocol = "udp"
-    from_port = 8472
-    to_port = 8472
-    security_groups = [aws_security_group.petclinic-mutual-sg.id]
-  }
+
   egress {
     protocol = "-1"
     from_port = 0
     to_port = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
   tags = {
     Name = "kube-master-secgroup"
   }
 }
 
+resource "aws_iam_role" "petclinic-master-server-s3-role" {
+  name               = "petclinic-master-server-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"]
+}
+
+resource "aws_iam_instance_profile" "petclinic-master-server-profile" {
+  name = "petclinic-master-server-profile"
+  role = aws_iam_role.petclinic-master-server-s3-role.name
+}
+
 resource "aws_instance" "kube-master" {
     ami = "ami-053b0d53c279acc90"
     instance_type = "t3a.medium"
-    iam_instance_profile = module.iam.master_profile_name
+    iam_instance_profile = aws_iam_instance_profile.petclinic-master-server-profile.name
     vpc_security_group_ids = [aws_security_group.petclinic-kube-master-sg.id, aws_security_group.petclinic-mutual-sg.id]
     key_name = "clarus"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
     availability_zone = "us-east-1a"
     tags = {
         Name = "kube-master"
-        "kubernetes.io/cluster/petclinicCluster" = "owned"
         Project = "tera-kube-ans"
         Role = "master"
         Id = "1"
@@ -1695,14 +1283,12 @@ resource "aws_instance" "kube-master" {
 resource "aws_instance" "worker-1" {
     ami = "ami-053b0d53c279acc90"
     instance_type = "t3a.medium"
-        iam_instance_profile = module.iam.worker_profile_name
     vpc_security_group_ids = [aws_security_group.petclinic-kube-worker-sg.id, aws_security_group.petclinic-mutual-sg.id]
     key_name = "clarus"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
     availability_zone = "us-east-1a"
     tags = {
         Name = "worker-1"
-        "kubernetes.io/cluster/petclinicCluster" = "owned"
         Project = "tera-kube-ans"
         Role = "worker"
         Id = "1"
@@ -1713,14 +1299,12 @@ resource "aws_instance" "worker-1" {
 resource "aws_instance" "worker-2" {
     ami = "ami-053b0d53c279acc90"
     instance_type = "t3a.medium"
-    iam_instance_profile = module.iam.worker_profile_name
     vpc_security_group_ids = [aws_security_group.petclinic-kube-worker-sg.id, aws_security_group.petclinic-mutual-sg.id]
     key_name = "clarus"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
     availability_zone = "us-east-1a"
     tags = {
         Name = "worker-2"
-        "kubernetes.io/cluster/petclinicCluster" = "owned"
         Project = "tera-kube-ans"
         Role = "worker"
         Id = "2"
@@ -1839,7 +1423,7 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${WORKSPACE}/
 
   * Click `Build Now`
 
-- Create a folder for ansible jobs under the petclinic-microservices-with-db folder.
+- Create a folder for ansible jobs under the `petclinic-microservices-with-db` folder.
 
 ```bash
 mkdir -p ansible/inventory
@@ -1930,38 +1514,6 @@ ansible -i ./ansible/inventory/dev_stack_dynamic_inventory_aws_ec2.yaml all -m p
 
   * Click `Build Now`
 
-- Create a `ClusterConfiguration file` and save it as `clusterconfig-base.yml` under `ansible/playbooks` folder.
-
-```yml
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: v1.26.3
-controlPlaneEndpoint: ${CONTROLPLANE_ENDPOINT}
-networking:
-  podSubnet: 10.244.0.0/16
-apiServer:
-  extraArgs:
-    cloud-provider: external
-controllerManager:
-  extraArgs:
-    cloud-provider: external
----
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: InitConfiguration
-nodeRegistration:
-  kubeletExtraArgs:
-    cloud-provider: external
----
-kind: KubeletConfiguration
-apiVersion: kubelet.config.k8s.io/v1beta1
-cgroupDriver: systemd
-```
-
-- The fields in the `clusterconfig-base.yml` file:
-    - ```controlPlaneEndpoint:``` Private IP address of the master node. (It will be paste programmatically.)
-    - ```podSubnet:``` Pod CIDR is necessary for Flannel CNI Plug-in.
-    - ```cloud-provider:``` With the value ```external``` Kubernetes cluster will be aware of the cloud controller manager. So that the cloud controller manager can implement specific tasks related to nodes, services etc.
-
 - Create an ansible playbook to install kubernetes and save it as `k8s_setup.yaml` under `ansible/playbooks` folder.
 
 ```yaml
@@ -2027,8 +1579,12 @@ cgroupDriver: systemd
       mkdir /etc/containerd
       containerd config default | sudo tee /etc/containerd/config.toml >/dev/null 2>&1
       sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
-      systemctl restart containerd
-      systemctl enable containerd
+
+  - name: Restart containerd and enable
+    service:
+      name: containerd
+      state: restarted
+      enabled: yes
 
 
 - hosts: role_master
@@ -2038,27 +1594,10 @@ cgroupDriver: systemd
     become: yes
     shell: kubeadm config images pull
 
-  - name: copy the configuration
-    become: yes
-    copy: 
-      src: ./clusterconfig-base.yml
-      dest: /home/ubuntu/
-  
-  - name: get gettext-base
-    become: true
-    apt:
-      package: gettext-base
-      state: present
-
-  - name: change controlplane_endpoint and produce the clusterconfig.yml file
-    shell: |
-      export CONTROLPLANE_ENDPOINT={{ hostvars[inventory_hostname]['private_ip_address'] }}
-      envsubst < /home/ubuntu/clusterconfig-base.yml > /home/ubuntu/clusterconfig.yml
-
   - name: initialize the Kubernetes cluster using kubeadm
     become: true
     shell: |
-      kubeadm init --config /home/ubuntu/clusterconfig.yml
+      kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=All
     
   - name: Setup kubeconfig for ubuntu user
     become: true
@@ -2084,6 +1623,13 @@ cgroupDriver: systemd
       name: "kube_master"
       worker_join: "{{ join_command_for_workers.stdout.strip() }}"
 
+  - name: install Helm 
+    shell: |
+      cd /home/ubuntu
+      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      chmod 777 get_helm.sh
+      ./get_helm.sh
+
 - hosts: role_worker
   become: true
   tasks:
@@ -2092,30 +1638,7 @@ cgroupDriver: systemd
     shell: "{{ hostvars['kube_master']['worker_join'] }}"
     register: result_of_joining
 
-- hosts: role_master
-  become: false
-  tasks:
-
-  - name: Patch the instances
-    become: false
-    shell: |
-      cd /home/ubuntu
-      kubectl patch node {{ hostvars[groups['role_master'][0]]['private_dns_name'] }} -p '{"spec":{"providerID":"aws:///us-east-1a/{{ hostvars[groups['role_master'][0]]['instance_id'] }}" }}'
-      kubectl patch node {{ hostvars[groups['role_worker'][0]]['private_dns_name'] }} -p '{"spec":{"providerID":"aws:///us-east-1a/{{ hostvars[groups['role_worker'][0]]['instance_id'] }}" }}'
-      kubectl patch node {{ hostvars[groups['role_worker'][1]]['private_dns_name'] }} -p '{"spec":{"providerID":"aws:///us-east-1a/{{ hostvars[groups['role_worker'][1]]['instance_id'] }}" }}'
-
-  - name: Deploy the required cloud-controller-manager 
-    shell: |
-      cd /home/ubuntu
-      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-      chmod 777 get_helm.sh
-      ./get_helm.sh
-      helm repo add aws-cloud-controller-manager https://kubernetes.github.io/cloud-provider-aws
-      helm repo update
-      helm upgrade --install aws-cloud-controller-manager aws-cloud-controller-manager/aws-cloud-controller-manager --set image.tag=v1.26.0
-      
-  - name: Deploy Nginx Ingress 
-    shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.0/deploy/static/provider/cloud/deploy.yaml
+  - debug: msg='{{ result_of_joining.stdout }}'
 ```
 
 - Commit the change, then push the ansible playbooks to the remote repo.
@@ -2271,8 +1794,6 @@ services:
       kompose.service.nodeport.port: "30001"
   tracing-server:
     image: openzipkin/zipkin
-    environment:
-    - JAVA_OPTS=-XX:+UnlockExperimentalVMOptions -Djava.security.egd=file:/dev/./urandom
     ports:
      - 9411:9411
   admin-server:
@@ -2409,6 +1930,7 @@ sudo su -s /bin/bash jenkins
 export PATH=$PATH:/usr/local/bin
 helm version
 helm plugin install https://github.com/hypnoglow/helm-s3.git
+exit
 ``` 
 
 * ``Initialize`` the Amazon S3 Helm repository.
@@ -2692,7 +2214,7 @@ driver.close()
 - hosts: all
   tasks:
   - name: run dummy selenium job
-    shell: "docker run --rm -v {{ workspace }}:{{ workspace }} -w {{ workspace }} callahanclarus/selenium-py-chrome:latest python {{ item }}"
+    shell: "docker run --rm -v {{ workspace }}:{{ workspace }} -w {{ workspace }} clarusway/selenium-py-chrome:latest python {{ item }}"
     with_fileglob: "{{ workspace }}/selenium-jobs/dummy*.py"
     register: output
   
@@ -2748,7 +2270,7 @@ ansible-playbook --connection=local --inventory 127.0.0.1, --extra-vars "workspa
 - hosts: all
   tasks:
   - name: run all selenium jobs
-    shell: "docker run --rm --env MASTER_PUBLIC_IP={{ master_public_ip }} -v {{ workspace }}:{{ workspace }} -w {{ workspace }} callahanclarus/selenium-py-chrome:latest python {{ item }}"
+    shell: "docker run --rm --env MASTER_PUBLIC_IP={{ master_public_ip }} -v {{ workspace }}:{{ workspace }} -w {{ workspace }} clarusway/selenium-py-chrome:latest python {{ item }}"
     register: output
     with_fileglob: "{{ workspace }}/selenium-jobs/test*.py"
   
@@ -2954,4 +2476,1659 @@ git push
 git checkout dev
 git merge feature/msp-18
 git push origin dev
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 19 - Create a QA Environment on EKS Cluster
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+- Create `feature/msp-19` branch from `dev`.
+
+```bash
+git checkout dev
+git branch feature/msp-19
+git checkout feature/msp-19
+```
+
+- Create a folder for QA environment on EKS cluster setup with the name of `qa-eks-cluster` under `infrastructure` folder.
+
+- Create a `cluster.yaml` file under `infrastructure/qa-eks-cluster` folder.
+
+```yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: petclinic-cluster
+  region: us-east-1
+availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3a.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    volumeSize: 8
+```
+
+- Commit the change, then push the script to the remote repo.
+
+```bash
+git add .
+git commit -m 'added cluster.yaml file'
+git push --set-upstream origin feature/msp-19
+git checkout dev
+git merge feature/msp-19
+git push origin dev
+```
+- ### Install eksctl
+
+- Download and extract the latest release of eksctl with the following command.
+
+```bash
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+```
+
+- Move the extracted binary to /usr/local/bin.
+
+```bash
+sudo mv /tmp/eksctl /usr/local/bin
+```
+
+- Test that your installation was successful with the following command.
+
+```bash
+eksctl version
+```
+
+### Install kubectl
+
+- Download the Amazon EKS vended kubectl binary.
+
+```bash
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/linux/amd64/kubectl
+```
+
+- Apply execute permissions to the binary.
+
+```bash
+chmod +x ./kubectl
+```
+
+- Move the kubectl binary to /usr/local/bin.
+
+```bash
+sudo mv kubectl /usr/local/bin
+```
+
+- After you install kubectl , you can verify its version with the following command:
+
+```bash
+kubectl version --short --client
+```
+
+- Switch user to jenkins for creating eks cluster. Execute following commands as `jenkins` user.
+
+```bash
+sudo su - jenkins
+```
+
+- Create a `cluster.yaml` file under `/var/lib/jenkins` folder.
+
+```yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: petclinic-cluster
+  region: us-east-1
+availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3a.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    volumeSize: 8
+```
+
+- Create an EKS cluster via `eksctl`. It will take a while.
+
+```bash
+eksctl create cluster -f cluster.yaml
+```
+
+- After the cluster is up, run the following command to install `ingress controller`.
+
+```bash
+export PATH=$PATH:$HOME/bin
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.0/deploy/static/provider/cloud/deploy.yaml
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 20 - Prepare Build Scripts for QA Environment
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+- Create `feature/msp-20` branch from `dev`.
+
+```bash
+git checkout dev
+git branch feature/msp-20
+git checkout feature/msp-20
+```
+
+- Create a ``Jenkins Job`` to create Docker Registry for `QA` manually on AWS ECR.
+
+```yml
+- job name: create-ecr-docker-registry-for-petclinic-qa
+- job type: Freestyle project
+- Build:
+      Add build step: Execute Shell
+      Command:
+```
+```bash
+PATH="$PATH:/usr/local/bin"
+APP_REPO_NAME="clarusway-repo/petclinic-app-qa"
+AWS_REGION="us-east-1"
+
+aws ecr describe-repositories --region ${AWS_REGION} --repository-name ${APP_REPO_NAME} || \
+aws ecr create-repository \
+ --repository-name ${APP_REPO_NAME} \
+ --image-scanning-configuration scanOnPush=false \
+ --image-tag-mutability MUTABLE \
+ --region ${AWS_REGION}
+```
+* Click `save`.
+* Click `Build Now`
+
+- Prepare a script to create ECR tags for the docker images and save it as `prepare-tags-ecr-for-qa-docker-images.sh` and save it under `jenkins` folder.
+
+```bash
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+export IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+export IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+```
+
+- Prepare a script to build the dev docker images tagged for ECR registry and save it as `build-qa-docker-images-for-ecr.sh` and save it under `jenkins` folder.
+
+```bash
+docker build --force-rm -t "${IMAGE_TAG_ADMIN_SERVER}" "${WORKSPACE}/spring-petclinic-admin-server"
+docker build --force-rm -t "${IMAGE_TAG_API_GATEWAY}" "${WORKSPACE}/spring-petclinic-api-gateway"
+docker build --force-rm -t "${IMAGE_TAG_CONFIG_SERVER}" "${WORKSPACE}/spring-petclinic-config-server"
+docker build --force-rm -t "${IMAGE_TAG_CUSTOMERS_SERVICE}" "${WORKSPACE}/spring-petclinic-customers-service"
+docker build --force-rm -t "${IMAGE_TAG_DISCOVERY_SERVER}" "${WORKSPACE}/spring-petclinic-discovery-server"
+docker build --force-rm -t "${IMAGE_TAG_HYSTRIX_DASHBOARD}" "${WORKSPACE}/spring-petclinic-hystrix-dashboard"
+docker build --force-rm -t "${IMAGE_TAG_VETS_SERVICE}" "${WORKSPACE}/spring-petclinic-vets-service"
+docker build --force-rm -t "${IMAGE_TAG_VISITS_SERVICE}" "${WORKSPACE}/spring-petclinic-visits-service"
+docker build --force-rm -t "${IMAGE_TAG_GRAFANA_SERVICE}" "${WORKSPACE}/docker/grafana"
+docker build --force-rm -t "${IMAGE_TAG_PROMETHEUS_SERVICE}" "${WORKSPACE}/docker/prometheus"
+```
+
+- Prepare a script to push the dev docker images to the ECR repo and save it as `push-qa-docker-images-to-ecr.sh` and save it under `jenkins` folder.
+
+```bash
+aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+docker push "${IMAGE_TAG_ADMIN_SERVER}"
+docker push "${IMAGE_TAG_API_GATEWAY}"
+docker push "${IMAGE_TAG_CONFIG_SERVER}"
+docker push "${IMAGE_TAG_CUSTOMERS_SERVICE}"
+docker push "${IMAGE_TAG_DISCOVERY_SERVER}"
+docker push "${IMAGE_TAG_HYSTRIX_DASHBOARD}"
+docker push "${IMAGE_TAG_VETS_SERVICE}"
+docker push "${IMAGE_TAG_VISITS_SERVICE}"
+docker push "${IMAGE_TAG_GRAFANA_SERVICE}"
+docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
+```
+
+- Prepare a script to deploy the application on QA environment and save it as `deploy_app_on_qa_environment.sh` under `jenkins` folder.
+
+```bash
+echo 'Deploying App on Kubernetes'
+envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
+sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo update
+helm package k8s/petclinic_chart
+AWS_REGION=$AWS_REGION helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
+kubectl create ns petclinic-qa || echo "namespace petclinic-qa already exists"
+kubectl delete secret regcred -n petclinic-qa || echo "there is no regcred secret in petclinic-qa namespace"
+kubectl create secret generic regcred -n petclinic-qa \
+    --from-file=.dockerconfigjson=/var/lib/jenkins/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
+AWS_REGION=$AWS_REGION helm repo update
+AWS_REGION=$AWS_REGION helm upgrade --install \
+    petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
+    --namespace petclinic-qa
+```
+
+- Commit the change, then push the script to the remote repo.
+
+```bash
+git add .
+git commit -m 'added build scripts for QA Environment'
+git push --set-upstream origin feature/msp-20
+git checkout dev
+git merge feature/msp-20
+git push origin dev
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 21 - Build and Deploy App on QA Environment Manually
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+- Create `feature/msp-21` branch from `dev`.
+
+```bash
+git checkout dev
+git branch feature/msp-21
+git checkout feature/msp-21
+```
+
+- Create a ``Jenkins Job`` with name of `build-and-deploy-petclinic-on-qa-env` to build and deploy the app on `QA environment` manually on `release` branch using following script, and save the script as `build-and-deploy-petclinic-on-qa-env-manually.sh` under `jenkins` folder.
+
+```yml
+- job name: build-and-deploy-petclinic-on-qa-env  
+- job type: Freestyle project
+- Source Code Management: Git
+      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+- Branches to build:
+      Branch Specifier (blank for 'any'): */release
+- Build:
+      Add build step: Execute Shell
+      Command:
+```
+```bash
+PATH="$PATH:/usr/local/bin:$HOME/bin"
+APP_NAME="petclinic"
+APP_REPO_NAME="clarusway-repo/petclinic-app-qa"
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export AWS_REGION="us-east-1"
+ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+echo 'Packaging the App into Jars with Maven'
+. ./jenkins/package-with-maven-container.sh
+echo 'Preparing QA Tags for Docker Images'
+. ./jenkins/prepare-tags-ecr-for-qa-docker-images.sh
+echo 'Building App QA Images'
+. ./jenkins/build-qa-docker-images-for-ecr.sh
+echo "Pushing App QA Images to ECR Repo"
+. ./jenkins/push-qa-docker-images-to-ecr.sh
+echo 'Deploying App on Kubernetes Cluster'
+. ./jenkins/deploy_app_on_qa_environment.sh
+echo 'Deleting all local images'
+docker image prune -af
+```
+* Click `save`.
+
+- Commit the change, then push the script to the remote repo.
+
+```bash
+git add .
+git commit -m 'added script for jenkins job to build and deploy app on QA environment'
+git push --set-upstream origin feature/msp-21
+git checkout dev
+git merge feature/msp-21
+git push origin dev
+```
+
+- Merge `dev` into `release` branch, then run `build-and-deploy-petclinic-on-qa-env` job to build and deploy the app on `QA environment` manually.
+
+```bash
+git checkout release
+git merge dev
+git push origin release
+```
+* Click `Build Now`
+
+- bind ingress address to your host name that defines in api-gateway-ingress.yaml on the route53 service.
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 22 - Prepare a QA Pipeline
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+- Create `feature/msp-22` branch from `dev`.
+
+```bash
+git checkout dev
+git branch feature/msp-22
+git checkout feature/msp-22
+```
+
+- Prepare a Jenkinsfile for `petclinic-weekly-qa` builds and save it as `jenkinsfile-petclinic-weekly-qa` under `jenkins` folder.
+
+```groovy
+pipeline {
+    agent any
+    environment {
+        PATH=sh(script:"echo $PATH:/usr/local/bin:$HOME/bin", returnStdout:true).trim()
+        APP_NAME="petclinic"
+        APP_REPO_NAME="clarusway-repo/petclinic-app-qa"
+        AWS_ACCOUNT_ID=sh(script:'export PATH="$PATH:/usr/local/bin" && aws sts get-caller-identity --query Account --output text', returnStdout:true).trim()
+        AWS_REGION="us-east-1"
+        ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+    }
+    stages {
+        stage('Package Application') {
+            steps {
+                echo 'Packaging the app into jars with maven'
+                sh ". ./jenkins/package-with-maven-container.sh"
+            }
+        }
+        stage('Prepare Tags for Docker Images') {
+            steps {
+                echo 'Preparing Tags for Docker Images'
+                script {
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-qa-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    env.IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+                    env.IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+                }
+            }
+        }
+        stage('Build App Docker Images') {
+            steps {
+                echo 'Building App Dev Images'
+                sh ". ./jenkins/build-qa-docker-images-for-ecr.sh"
+                sh 'docker image ls'
+            }
+        }
+        stage('Push Images to ECR Repo') {
+            steps {
+                echo "Pushing ${APP_NAME} App Images to ECR Repo"
+                sh ". ./jenkins/push-qa-docker-images-to-ecr.sh"
+            }
+        }
+        stage('Deploy App on Kubernetes Cluster'){
+            steps {
+                echo 'Deploying App on Kubernetes Cluster'
+                sh '. ./jenkins/deploy_app_on_qa_environment.sh'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Deleting all local images'
+            sh 'docker image prune -af'
+        }
+    }
+}
+```
+
+- Commit the change, then push the script to the remote repo.
+
+```bash
+git add .
+git commit -m 'added jenkinsfile petclinic-weekly-qa for release branch'
+git push --set-upstream origin feature/msp-22
+git checkout dev
+git merge feature/msp-22
+git push origin dev
+```
+
+- Merge `dev` into `release` branch to build and deploy the app on `QA environment` with pipeline.
+
+```bash
+git checkout release
+git merge dev
+git push origin release
+```
+
+- Create a QA ``Pipeline`` on Jenkins with name of `petclinic-weekly-qa` with following script and configure a `cron job` to trigger the pipeline every Sundays at midnight (`59 23 * * 0`) on `release` branch. Petclinic weekly build pipeline should be built on permanent QA environment.
+
+```yml
+- job name: petclinic-weekly-qa
+- job type: pipeline
+- Source Code Management: Git
+      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+- Branches to build:
+      Branch Specifier (blank for 'any'): */release
+- Pipeline:
+      Script Path: jenkins/jenkinsfile-petclinic-weekly-qa
+```
+* Click `save`.
+* Click `Build Now`
+
+- Delete  EKS cluster via `eksctl`. It will take a while.
+
+```bash
+sudo su - jenkins
+eksctl delete cluster -f cluster.yaml
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 23 - Prepare High-availability RKE Kubernetes Cluster on AWS EC2
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Create `feature/msp-23` branch from `release`.
+
+``` bash
+git checkout release
+git branch feature/msp-23
+git checkout feature/msp-23
+```
+
+* Explain [Rancher Container Management Tool](https://rancher.com/docs/rancher/v2.x/en/overview/architecture/).
+
+* Create an IAM Policy with name of `petclinic-rke-controlplane-policy.json` and also save it under `infrastructure` for `Control Plane` node to enable Rancher to create or remove EC2 resources.
+
+``` json
+{
+"Version": "2012-10-17",
+"Statement": [
+  {
+    "Effect": "Allow",
+    "Action": [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "ec2:DescribeInstances",
+      "ec2:DescribeRegions",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVolumes",
+      "ec2:CreateSecurityGroup",
+      "ec2:CreateTags",
+      "ec2:CreateVolume",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:ModifyVolume",
+      "ec2:AttachVolume",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CreateRoute",
+      "ec2:DeleteRoute",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DeleteVolume",
+      "ec2:DetachVolume",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:DescribeVpcs",
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:AttachLoadBalancerToSubnets",
+      "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
+      "elasticloadbalancing:CreateLoadBalancer",
+      "elasticloadbalancing:CreateLoadBalancerPolicy",
+      "elasticloadbalancing:CreateLoadBalancerListeners",
+      "elasticloadbalancing:ConfigureHealthCheck",
+      "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:DeleteLoadBalancerListeners",
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DetachLoadBalancerFromSubnets",
+      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
+      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+      "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:CreateListener",
+      "elasticloadbalancing:CreateTargetGroup",
+      "elasticloadbalancing:DeleteListener",
+      "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeLoadBalancerPolicies",
+      "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetHealth",
+      "elasticloadbalancing:ModifyListener",
+      "elasticloadbalancing:ModifyTargetGroup",
+      "elasticloadbalancing:RegisterTargets",
+      "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
+      "iam:CreateServiceLinkedRole",
+      "kms:DescribeKey"
+    ],
+    "Resource": [
+      "*"
+    ]
+  }
+]
+}
+```
+
+* Create an IAM Policy with name of `petclinic-rke-etcd-worker-policy.json` and also save it under `infrastructure` for `etcd` or `worker` nodes to enable Rancher to get information from EC2 resources.
+
+```json
+{
+"Version": "2012-10-17",
+"Statement": [
+    {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:DescribeInstances",
+            "ec2:DescribeRegions",
+            "ecr:GetAuthorizationToken",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:GetRepositoryPolicy",
+            "ecr:DescribeRepositories",
+            "ecr:ListImages",
+            "ecr:BatchGetImage"
+        ],
+        "Resource": "*"
+    }
+]
+}
+```
+
+* Create an IAM Role with name of `petclinic-rke-role` to attach RKE nodes (instances) using `petclinic-rke-controlplane-policy` and `petclinic-rke-etcd-worker-policy`.
+
+* Create a security group for External Application Load Balancer of Rancher with name of `petclinic-rke-alb-sg` and allow HTTP (Port 80) and HTTPS (Port 443) connections from anywhere.
+  
+* Create a security group for RKE Kubernetes Cluster with name of `petclinic-rke-cluster-sg` and define following inbound and outbound rules.
+
+  * ``Inbound`` rules;
+
+    * Allow HTTP protocol (TCP on port 80) from Application Load Balancer.
+
+    * Allow HTTPS protocol (TCP on port 443) from any source that needs to use Rancher UI or API.
+
+    * Allow TCP on port 6443 from any source that needs to use Kubernetes API server(ex. Jenkins Server).
+  
+    * Allow SSH on port 22 to any node IP that installs Docker (ex. Jenkins Server).
+
+  * ``Outbound`` rules;
+
+    * Allow SSH protocol (TCP on port 22) to any node IP from a node created using Node Driver.
+
+    * Allow HTTP protocol (TCP on port 80) to all IP for getting updates.
+    
+    * Allow HTTPS protocol (TCP on port 443) to `35.160.43.145/32`, `35.167.242.46/32`, `52.33.59.17/32` for catalogs of `git.rancher.io`.
+
+    * Allow TCP on port 2376 to any node IP from a node created using Node Driver for Docker machine TLS port.
+
+  * Allow all protocol on all port from `petclinic-rke-cluster-sg` for self communication between Rancher `controlplane`, `etcd`, `worker` nodes.
+
+* Log into Jenkins Server and create `petclinic-rancher.pem` key-pair for Rancher Server using AWS CLI
+  
+```bash
+aws ec2 create-key-pair --region us-east-1 --key-name petclinic-rancher --query KeyMaterial --output text > ~/.ssh/petclinic-rancher.pem
+chmod 400 ~/.ssh/petclinic-rancher.pem
+```
+
+* Launch an EC2 instance using `Ubuntu Server 20.04 LTS (HVM) (64-bit x86)` with `t3a.medium` type, 16 GB root volume,  `petclinic-rke-cluster-sg` security group, `petclinic-rke-role` IAM Role, `Name:Petclinic-Rancher-Cluster-Instance` tag and `petclinic-rancher.pem` key-pair. Take note of `subnet id` of EC2. 
+
+* Attach a tag to the `nodes (intances)`, `subnets` and `security group` for Rancher with `Key = kubernetes.io/cluster/Petclinic-Rancher` and `Value = owned`.
+  
+* Log into `Petclinic-Rancher-Cluster-Instance` from Jenkins Server (Bastion host) and install Docker using the following script.
+
+```bash
+# Set hostname of instance
+sudo hostnamectl set-hostname rancher-instance-1
+# Update OS 
+sudo apt-get update -y
+sudo apt-get upgrade -y
+# Update the apt package index and install packages to allow apt to use a repository over HTTPS
+sudo apt-get install \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# Use the following command to set up the stable repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  # Update packages
+sudo apt-get update
+
+# Install and start Docker
+# RKE is not compatible with the current Docker version (v23 hence we need to install an earlier version of Docker
+sudo apt-get install docker-ce=5:20.10.23~3-0~ubuntu-focal docker-ce-cli=5:20.10.23~3-0~ubuntu-focal containerd.io docker-compose-plugin
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add ubuntu user to docker group
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+
+* Create a target groups with name of `petclinic-rancher-http-80-tg` with following setup and add the `rancher instances` to it.
+
+```yml
+Target type         : instance
+Protocol            : HTTP
+Port                : 80
+
+<!-- Health Checks Settings -->
+Protocol            : HTTP
+Path                : /healthz
+Port                : traffic port
+Healthy threshold   : 3
+Unhealthy threshold : 3
+Timeout             : 5 seconds
+Interval            : 10 seoconds
+Success             : 200
+```
+
+* Create Application Load Balancer with name of `petclinic-rancher-alb` using `petclinic-rke-alb-sg` security group with following settings and add `petclinic-rancher-http-80-tg` target group to it.
+
+```yml
+Scheme              : internet-facing
+IP address type     : ipv4
+
+<!-- Listeners-->
+Protocol            : HTTP
+Port                : 80
+Availability Zones  : Select AZs of RKE instances
+Target group        : `petclinic-rancher-http-80-tg` target group
+
+<!-- Add Listener-->
+Protocol            : HTTPS
+Port                : 443
+Availability Zones  : Select AZs of RKE instances
+Target group        : `petclinic-rancher-http-80-tg` target group
+
+<!-- Secure listener settings -->
+From ACM            : *.clarusway.us   # change with your dns name
+```
+
+* Configure ALB Listener of HTTP on `Port 80` to redirect traffic to HTTPS on `Port 443`.
+
+* Create DNS A record for `rancher.clarusway.us` and attach the `petclinic-rancher-alb` application load balancer to it.
+
+* Install RKE, the Rancher Kubernetes Engine, [Kubernetes distribution and command-line tool](https://rancher.com/docs/rke/latest/en/installation/)) on Jenkins Server.
+
+```bash
+curl -SsL "https://github.com/rancher/rke/releases/download/v1.4.5/rke_linux-amd64" -o "rke_linux-amd64"
+sudo mv rke_linux-amd64 /usr/local/bin/rke
+chmod +x /usr/local/bin/rke
+rke --version
+```
+
+* Create `rancher-cluster.yml` with following content to configure RKE Kubernetes Cluster and save it under `infrastructure` folder.
+
+```yml
+nodes:
+  - address: 172.31.82.64                # Change with the Private Ip of rancher server
+    internal_address: 172.31.82.64       # Change with the Private Ip of rancher server
+    user: ubuntu
+    role:
+      - controlplane
+      - etcd
+      - worker
+
+# ignore_docker_version: true
+
+services:
+  etcd:
+    snapshot: true
+    creation: 6h
+    retention: 24h
+
+ssh_key_path: ~/.ssh/petclinic-rancher.pem
+
+# Required for external TLS termination with
+# ingress-nginx v0.22+
+ingress:
+  provider: nginx
+  options:
+    use-forwarded-headers: "true"
+```
+
+* Run `rke` command to setup RKE Kubernetes cluster on EC2 Rancher instance *`Warning:` You should add rule to cluster sec group for Jenkins Server using its `IP/32` from SSH (22) and TCP(6443) before running `rke` command, because it is giving connection error.*
+
+```bash
+rke up --config ./rancher-cluster.yml
+```
+
+* Check if the RKE Kubernetes Cluster created successfully.
+
+```bash
+mkdir -p ~/.kube
+mv ./kube_config_rancher-cluster.yml $HOME/.kube/config
+mv ./rancher-cluster.rkestate $HOME/.kube/rancher-cluster.rkestate
+chmod 400 ~/.kube/config
+kubectl get nodes
+kubectl get pods --all-namespaces
+```
+
+* Commit the change, then push the script to the remote repo.
+
+``` bash
+git add .
+git commit -m 'added rancher setup files'
+git push --set-upstream origin feature/msp-23
+git checkout release
+git merge feature/msp-23
+git push origin release
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 24 - Install Rancher App on RKE Kubernetes Cluster
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Add ``helm chart repositories`` of Rancher.
+
+```bash
+helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+helm repo list
+```
+
+* Create a ``namespace`` for Rancher.
+
+```bash
+kubectl create namespace cattle-system
+```
+
+* Install Rancher on RKE Kubernetes Cluster using Helm.
+
+```bash
+helm install rancher rancher-latest/rancher \
+  --namespace cattle-system \
+  --set hostname=rancher.clarusway.us \    # Change DNS name
+  --set tls=external \
+  --set replicas=1 \
+  --set global.cattle.psp.enabled=false
+```
+
+* Check if the Rancher Server is deployed successfully.
+  
+```bash
+kubectl -n cattle-system get deploy rancher
+kubectl -n cattle-system get pods
+```
+
+* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
+
+```bash
+export KUBECONFIG=~/.kube/config
+kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 25 - Create Staging and Production Environment with Rancher
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* To provide access of Rancher to the cloud resources, create a `Cloud Credentials` on `Cluster Management` segment for AWS on Rancher and name it as `Petclinic-AWS-Training-Account`. As region select `us-east-1`.
+
+* Create a `Node Template` (Cluster Management --> RKE1 configuration) on Rancher with following configuration for to be used while launching the EC2 instances and name it as `Petclinic-AWS-RancherOs-Template`.
+
+```yml
+Region            : us-east-1
+Security group    : create new sg (rancher-nodes)
+Instance Type     : t3a.medium
+Root Disk Size    : 16 GB
+AMI (RancherOS)   : ami-02fe87f853d560d52
+SSH User          : rancher
+Label             : os=rancheros
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 26 - Prepare Nexus Server
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Create `feature/msp-26` branch from `release`.
+
+``` bash
+git checkout release
+git branch feature/msp-26
+git checkout feature/msp-26
+```
+
+* Set up a Nexus Server by using docker image.  To do so, prepare a [Terraform File for Nexus Server](./msp-26-nexus-server-terraform.yml) with following script and save it as `nexus-server.tf` under `infrastructure` folder. 
+
+* Note: Terraform will will launch an t3a.medium (Nexus needs 8 GB of RAM) EC2 instance using the Amazon Linux 2 AMI with security group allowing `SSH (22)` and `Nexus Port (8081)` connections.
+
+``` bash
+#! /bin/bash
+# update os
+yum update -y
+# set server hostname as jenkins-server
+hostnamectl set-hostname nexus-server
+# install docker
+yum install docker -y
+# start docker
+systemctl start docker
+# enable docker service
+systemctl enable docker
+# add ec2-user to docker group
+sudo usermod -aG docker ec2-user
+newgrp docker
+# create a docker volume for nexus persistent data
+docker volume create --name nexus-data
+# run the nexus container
+docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
+```
+
+- Open your browser to load the repository manager: `http://<AWS public dns>:8081` and click `Sign in` upper right of the page. A box will pop up.
+Write `admin` for Username and paste the string which you copied from admin.password file for the password.
+
+- Use the content of the `initialpasswd.txt` file that is under the same directory of terrafom file. ("provisioner" block of the tf file copies the content of the  `admin.password` file in the container to the `initialpasswd.txt` in the local host.)
+
+- Click the ``Sign in`` button to start the Setup wizard. Click Next through the steps to update your password.
+
+- Click the ``Disable Anonymous Access box``.
+
+- Click Finish to complete the wizard.
+
+### Configure the app for Nexus Operation
+
+- Nexus searchs for ``settings.xml`` in the `/home/ec2-user/.m2` directory. .m2 directory is created after running the first mvn command.
+
+- Create the ``settings.xml`` file.
+
+```bash
+nano /home/ec2-user/.m2/settings.xml
+```
+
+- Your settings.xml file should look like this (Don't forget to change the URL of your repository and the password): 
+
+```xml
+<settings>
+  <mirrors>
+    <mirror>
+      <!--This sends everything else to /public -->
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://<AWS private IP>:8081/repository/maven-public/</url>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <id>nexus</id>
+      <!--Enable snapshots for the built in central repo to direct -->
+      <!--all requests to nexus via the mirror -->
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+     <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+<activeProfiles>
+    <!--make the profile active all the time -->
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>your-password</password> 
+    </server>
+  </servers>
+</settings>
+```
+
+- Delete `repository` folder under `/home/ec2-user/.m2` to see if dependies download from the Nexus server.
+
+- run the mvn command to see if it is worked.
+
+``` bash
+./mvnw clean
+```
+
+- Add distributionManagement element given below to your ``pom.xml`` file after `</dependencyManagement>` line. Include the endpoints to your maven-releases and maven-snapshots repos. Change localhost >>>> Private ip of your server.
+
+```xml
+<distributionManagement>
+  <repository>
+    <id>nexus</id>
+    <name>maven-releases</name>
+    <url>http://<AWS private IP>:8081/repository/maven-releases/</url>
+  </repository>
+  <snapshotRepository>
+    <id>nexus</id>
+    <name>maven-snapshots</name>
+    <url>http://<AWS private IP>:8081/repository/maven-snapshots/</url>
+  </snapshotRepository>
+</distributionManagement>
+```
+
+- Run following command; Created artifact will be stored in the nexus-releases repository.
+
+```bash
+./mvnw clean deploy
+```
+
+- Note: if you want to redeploy the same artifact to release repository, you need to set Deployment policy : "Allow redeploy".
+(nexus server --> server configuration --> repositories --> maven releases --> Deployment policy : ``Allow redeploy``)
+
+``` bash
+git add .
+git commit -m 'added Nexus server terraform files'
+git push --set-upstream origin feature/msp-26
+git checkout dev
+git merge feature/msp-26
+git push origin dev
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 27 - Prepare a Staging Pipeline
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Create `feature/msp-27` branch from `release`.
+
+``` bash
+git checkout release
+git branch feature/msp-27
+git checkout feature/msp-27
+```
+
+* Create a Kubernetes cluster using Rancher (Cluster Management --> Clusters) with RKE and new nodes in AWS  and name it as `petclinic-cluster-staging`.
+
+```yml
+Cluster Type      : Amazon EC2
+Name Prefix       : petclinic-k8s-instance
+Count             : 3
+etcd              : checked
+Control Plane     : checked
+Worker            : checked
+```
+
+* Create `petclinic-staging-ns` namespace on `petclinic-cluster-staging` with Rancher.
+
+* Create a ``Jenkins Job`` and name it as `create-ecr-docker-registry-for-petclinic-staging` to create Docker Registry for `Staging` manually on AWS ECR.
+
+```yml
+- job name: create-ecr-docker-registry-for-petclinic-staging
+- job type: Freestyle project
+- Build:
+      Add build step: Execute Shell
+      Command:
+```
+``` bash
+PATH="$PATH:/usr/local/bin"
+APP_REPO_NAME="clarusway-repo/petclinic-app-staging"
+AWS_REGION="us-east-1"
+
+aws ecr describe-repositories --region ${AWS_REGION} --repository-name ${APP_REPO_NAME} || \
+aws ecr create-repository \
+  --repository-name ${APP_REPO_NAME} \
+  --image-scanning-configuration scanOnPush=false \
+  --image-tag-mutability MUTABLE \
+  --region ${AWS_REGION}
+```
+* Click `save`.
+* Click `Build Now`
+
+* Prepare a script to create ECR tags for the staging docker images and name it as `prepare-tags-ecr-for-staging-docker-images.sh` and save it under `jenkins` folder.
+
+``` bash
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+export IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+export IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+```
+
+* Prepare a script to build the staging docker images tagged for ECR registry and name it as `build-staging-docker-images-for-ecr.sh` and save it under `jenkins` folder.
+
+``` bash
+docker build --force-rm -t "${IMAGE_TAG_ADMIN_SERVER}" "${WORKSPACE}/spring-petclinic-admin-server"
+docker build --force-rm -t "${IMAGE_TAG_API_GATEWAY}" "${WORKSPACE}/spring-petclinic-api-gateway"
+docker build --force-rm -t "${IMAGE_TAG_CONFIG_SERVER}" "${WORKSPACE}/spring-petclinic-config-server"
+docker build --force-rm -t "${IMAGE_TAG_CUSTOMERS_SERVICE}" "${WORKSPACE}/spring-petclinic-customers-service"
+docker build --force-rm -t "${IMAGE_TAG_DISCOVERY_SERVER}" "${WORKSPACE}/spring-petclinic-discovery-server"
+docker build --force-rm -t "${IMAGE_TAG_HYSTRIX_DASHBOARD}" "${WORKSPACE}/spring-petclinic-hystrix-dashboard"
+docker build --force-rm -t "${IMAGE_TAG_VETS_SERVICE}" "${WORKSPACE}/spring-petclinic-vets-service"
+docker build --force-rm -t "${IMAGE_TAG_VISITS_SERVICE}" "${WORKSPACE}/spring-petclinic-visits-service"
+docker build --force-rm -t "${IMAGE_TAG_GRAFANA_SERVICE}" "${WORKSPACE}/docker/grafana"
+docker build --force-rm -t "${IMAGE_TAG_PROMETHEUS_SERVICE}" "${WORKSPACE}/docker/prometheus"
+```
+
+* Prepare a script to push the staging docker images to the ECR repo and name it as `push-staging-docker-images-to-ecr.sh` and save it under `jenkins` folder.
+
+``` bash
+aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+docker push "${IMAGE_TAG_ADMIN_SERVER}"
+docker push "${IMAGE_TAG_API_GATEWAY}"
+docker push "${IMAGE_TAG_CONFIG_SERVER}"
+docker push "${IMAGE_TAG_CUSTOMERS_SERVICE}"
+docker push "${IMAGE_TAG_DISCOVERY_SERVER}"
+docker push "${IMAGE_TAG_HYSTRIX_DASHBOARD}"
+docker push "${IMAGE_TAG_VETS_SERVICE}"
+docker push "${IMAGE_TAG_VISITS_SERVICE}"
+docker push "${IMAGE_TAG_GRAFANA_SERVICE}"
+docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
+```
+
+* Install `Rancher CLI` on Jenkins Server.
+
+```bash
+curl -SsL "https://github.com/rancher/cli/releases/download/v2.7.0/rancher-linux-amd64-v2.7.0.tar.gz" -o "rancher-cli.tar.gz"
+tar -zxvf rancher-cli.tar.gz
+sudo mv ./rancher*/rancher /usr/local/bin/rancher
+chmod +x /usr/local/bin/rancher
+rancher --version
+```
+  
+* Create Rancher API Key [Rancher API Key](https://rancher.com/docs/rancher/v2.x/en/user-settings/api-keys/#creating-an-api-key) to enable access to the `Rancher` server. Take note, `Access Key (username)` and `Secret Key (password)`.
+
+- On jenkins server, select ***Manage Jenkins --> Manage Credentials --> Jenkins -->   Global credentials (unrestricted) --> Add Credentials***.
+
+```yml
+- credentials kind : Username with password
+- username: Access Key
+- password: Secret Key
+- id: rancher-petclinic-credentials
+```
+
+* Prepare a Jenkinsfile for `petclinic-staging` pipeline and save it as `jenkinsfile-petclinic-staging` under `jenkins` folder.
+
+``` groovy
+pipeline {
+    agent any
+    environment {
+        PATH=sh(script:"echo $PATH:/usr/local/bin", returnStdout:true).trim()
+        APP_NAME="petclinic"
+        APP_REPO_NAME="clarusway-repo/petclinic-app-staging"
+        AWS_ACCOUNT_ID=sh(script:'export PATH="$PATH:/usr/local/bin" && aws sts get-caller-identity --query Account --output text', returnStdout:true).trim()
+        AWS_REGION="us-east-1"
+        ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        RANCHER_URL="https://rancher.clarusway.us"
+        // Get the project-id from Rancher UI (projects/namespaces --> petclinic-cluster-staging namespace --> Edit yaml --> copy projectId )
+        RANCHER_CONTEXT="petclinic-cluster:project-id" 
+       //First part of projectID
+        CLUSTERID="petclinic-cluster"
+        RANCHER_CREDS=credentials('rancher-petclinic-credentials')
+    }
+    stages {
+        stage('Package Application') {
+            steps {
+                echo 'Packaging the app into jars with maven'
+                sh ". ./jenkins/package-with-maven-container.sh"
+            }
+        }
+        stage('Prepare Tags for Staging Docker Images') {
+            steps {
+                echo 'Preparing Tags for Staging Docker Images'
+                script {
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-staging-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    env.IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+                    env.IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+                }
+            }
+        }
+        stage('Build App Staging Docker Images') {
+            steps {
+                echo 'Building App Staging Images'
+                sh ". ./jenkins/build-staging-docker-images-for-ecr.sh"
+                sh 'docker image ls'
+            }
+        }
+        stage('Push Images to ECR Repo') {
+            steps {
+                echo "Pushing ${APP_NAME} App Images to ECR Repo"
+                sh ". ./jenkins/push-staging-docker-images-to-ecr.sh"
+            }
+        }
+        stage('Deploy App on Petclinic Kubernetes Cluster'){
+            steps {
+                echo 'Deploying App on K8s Cluster'
+                sh "rancher login $RANCHER_URL --context $RANCHER_CONTEXT --token $RANCHER_CREDS_USR:$RANCHER_CREDS_PSW"
+                sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
+                sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml"
+                sh "rancher kubectl delete secret regcred -n petclinic-staging-ns || true"
+                sh """
+                rancher kubectl create secret generic regcred -n petclinic-staging-ns \
+                --from-file=.dockerconfigjson=$JENKINS_HOME/.docker/config.json \
+                --type=kubernetes.io/dockerconfigjson
+                """
+                sh "rm -f k8s/config"
+                sh "rancher cluster kf $CLUSTERID > k8s/config"
+                sh "chmod 400 k8s/config"
+                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/"
+                sh "helm package k8s/petclinic_chart"
+                sh "helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
+                sh "helm repo update"
+                sh "AWS_REGION=$AWS_REGION helm upgrade --install petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} --namespace petclinic-staging-ns --kubeconfig k8s/config"
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Deleting all local images'
+            sh 'docker image prune -af'
+        }
+    }
+}
+```
+
+* Create an `A` record of `staging-petclinic.clarusway.us` in your hosted zone (in our case `clarusway.us`) using AWS Route 53 domain registrar and bind it to your `petclinic cluster`.
+
+* Create a Staging ``Pipeline`` on Jenkins with name of `petclinic-staging` with following script and configure a `cron job` to trigger the pipeline every Sundays at midnight (`59 23 * * 0`) on `release` branch. `Petclinic staging pipeline` should be deployed on permanent staging-environment on `petclinic-cluster` Kubernetes cluster under `petclinic-staging-ns` namespace.
+
+```yml
+- job name: petclinic-staging
+- job type: pipeline
+- Build Triggers:
+      Build periodically: 59 23 * * 0
+- Source Code Management: Git
+      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+- Branches to build:
+      Branch Specifier (blank for 'any'): */release
+- Pipeline:
+      Script Path: jenkins/jenkinsfile-petclinic-staging
+```
+* Click `save`.
+* Click `Build Now`
+
+* Commit the change, then push the script to the remote repo.
+
+``` bash
+git add .
+git commit -m 'added jenkinsfile petclinic-staging for release branch'
+git push --set-upstream origin feature/msp-27
+git checkout release
+git merge feature/msp-27
+git push origin release
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+## MSP 28 - Prepare a Production Pipeline
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Create `feature/msp-28` branch from `release`.
+
+``` bash
+git checkout release
+git branch feature/msp-28
+git checkout feature/msp-28
+```
+
+- Switch user to jenkins for creating eks cluster. Execute following commands as `jenkins` user.
+
+```bash
+sudo su - jenkins
+```
+
+- Create a `cluster.yaml` file under `/var/lib/jenkins` folder.
+
+```yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: petclinic-cluster
+  region: us-east-1
+availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3a.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    volumeSize: 8
+```
+
+- Create an EKS cluster via `eksctl`. It will take a while.
+
+```bash
+eksctl create cluster -f cluster.yaml
+```
+
+- After the cluster is up, run the following command to install `ingress controller`.
+
+```bash
+export PATH=$PATH:$HOME/bin
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+```
+
+
+* Create a ``Jenkins Job`` and name it as `create-ecr-docker-registry-for-petclinic-prod` to create Docker Registry for `Production` manually on AWS ECR.
+
+```yml
+- job name: create-ecr-docker-registry-for-petclinic-prod
+- job type: Freestyle project
+- Build:
+      Add build step: Execute Shell
+      Command:
+```
+``` bash
+PATH="$PATH:/usr/local/bin"
+APP_REPO_NAME="clarusway-repo/petclinic-app-prod"
+AWS_REGION="us-east-1"
+
+aws ecr describe-repositories --region ${AWS_REGION} --repository-name ${APP_REPO_NAME} || \
+aws ecr create-repository \
+  --repository-name ${APP_REPO_NAME} \
+  --image-scanning-configuration scanOnPush=false \
+  --image-tag-mutability MUTABLE \
+  --region ${AWS_REGION}
+```
+* Click `save`.
+* Click `Build Now`
+
+* Prepare a script to create ECR tags for the production docker images and name it as `prepare-tags-ecr-for-prod-docker-images.sh` and save it under `jenkins` folder.
+
+``` bash
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+MVN_VERSION=$(. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version)
+export IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+export IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+export IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+```
+
+* Prepare a script to build the production docker images tagged for ECR registry and name it as `build-prod-docker-images-for-ecr.sh` and save it under `jenkins` folder.
+
+``` bash
+docker build --force-rm -t "${IMAGE_TAG_ADMIN_SERVER}" "${WORKSPACE}/spring-petclinic-admin-server"
+docker build --force-rm -t "${IMAGE_TAG_API_GATEWAY}" "${WORKSPACE}/spring-petclinic-api-gateway"
+docker build --force-rm -t "${IMAGE_TAG_CONFIG_SERVER}" "${WORKSPACE}/spring-petclinic-config-server"
+docker build --force-rm -t "${IMAGE_TAG_CUSTOMERS_SERVICE}" "${WORKSPACE}/spring-petclinic-customers-service"
+docker build --force-rm -t "${IMAGE_TAG_DISCOVERY_SERVER}" "${WORKSPACE}/spring-petclinic-discovery-server"
+docker build --force-rm -t "${IMAGE_TAG_HYSTRIX_DASHBOARD}" "${WORKSPACE}/spring-petclinic-hystrix-dashboard"
+docker build --force-rm -t "${IMAGE_TAG_VETS_SERVICE}" "${WORKSPACE}/spring-petclinic-vets-service"
+docker build --force-rm -t "${IMAGE_TAG_VISITS_SERVICE}" "${WORKSPACE}/spring-petclinic-visits-service"
+docker build --force-rm -t "${IMAGE_TAG_GRAFANA_SERVICE}" "${WORKSPACE}/docker/grafana"
+docker build --force-rm -t "${IMAGE_TAG_PROMETHEUS_SERVICE}" "${WORKSPACE}/docker/prometheus"
+```
+
+* Prepare a script to push the production docker images to the ECR repo and name it as `push-prod-docker-images-to-ecr.sh` and save it under `jenkins` folder.
+
+``` bash
+aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+docker push "${IMAGE_TAG_ADMIN_SERVER}"
+docker push "${IMAGE_TAG_API_GATEWAY}"
+docker push "${IMAGE_TAG_CONFIG_SERVER}"
+docker push "${IMAGE_TAG_CUSTOMERS_SERVICE}"
+docker push "${IMAGE_TAG_DISCOVERY_SERVER}"
+docker push "${IMAGE_TAG_HYSTRIX_DASHBOARD}"
+docker push "${IMAGE_TAG_VETS_SERVICE}"
+docker push "${IMAGE_TAG_VISITS_SERVICE}"
+docker push "${IMAGE_TAG_GRAFANA_SERVICE}"
+docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
+```
+
+- Prepare a script to deploy the application on QA environment and save it as `deploy_app_on_prod_environment.sh` under `jenkins` folder.
+
+```bash
+echo 'Deploying App on Kubernetes'
+envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
+sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo update
+helm package k8s/petclinic_chart
+AWS_REGION=$AWS_REGION helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
+kubectl create ns petclinic-prod-ns || echo "namespace petclinic-prod-ns already exists"
+kubectl delete secret regcred -n petclinic-prod-ns || echo "there is no regcred secret in petclinic-prod-ns namespace"
+kubectl create secret generic regcred -n petclinic-prod-ns \
+    --from-file=.dockerconfigjson=/var/lib/jenkins/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
+AWS_REGION=$AWS_REGION helm repo update
+AWS_REGION=$AWS_REGION helm upgrade --install \
+    petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
+    --namespace petclinic-prod-ns
+```
+
+- At this stage, we will use ``Amazon RDS`` instead of mysql pod and service. Create a mysql database on AWS RDS.
+
+```yml
+  - Engine options: MySQL
+  - Version : 5.7.39
+  - Templates: Free tier
+  - DB instance identifier: petclinic
+  - Master username: root
+  - Master password: petclinic
+  - Public access: Yes
+  - Initial database name: petclinic
+```
+
+Not: Don't forget to open the 3306 port everywhere on the database security group.
+
+- Delete `mysql-server-deployment.yaml` file from `k8s/petclinic_chart/templates` folder.
+
+- Update `k8s/petclinic_chart/templates/mysql-server-service.yaml` as below.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-local-db.yml
+    kompose.version: 1.26.1 (a9d05d509)
+  labels:
+    io.kompose.service: mysql-server
+  name: mysql-server
+spec:
+  type: ExternalName
+  externalName: petclinic.cbanmzptkrzf.us-east-1.rds.amazonaws.com # Change this line with the endpoint of your RDS.
+```
+
+* Prepare a Jenkinsfile for `petclinic-prod` pipeline and save it as `jenkinsfile-petclinic-prod` under `jenkins` folder.
+
+``` groovy
+pipeline {
+    agent any
+    environment {
+        PATH=sh(script:"echo $PATH:/usr/local/bin", returnStdout:true).trim()
+        APP_NAME="petclinic"
+        APP_REPO_NAME="clarusway-repo/petclinic-app-prod"
+        AWS_ACCOUNT_ID=sh(script:'export PATH="$PATH:/usr/local/bin" && aws sts get-caller-identity --query Account --output text', returnStdout:true).trim()
+        AWS_REGION="us-east-1"
+        ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+    }
+    stages {
+        stage('Package Application') {
+            steps {
+                echo 'Packaging the app into jars with maven'
+                sh ". ./jenkins/package-with-maven-container.sh"
+            }
+        }
+        stage('Prepare Tags for Production Docker Images') {
+            steps {
+                echo 'Preparing Tags for Production Docker Images'
+                script {
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-admin-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_ADMIN_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:admin-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-api-gateway/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_API_GATEWAY="${ECR_REGISTRY}/${APP_REPO_NAME}:api-gateway-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-config-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CONFIG_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:config-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-customers-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_CUSTOMERS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:customers-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-discovery-server/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_DISCOVERY_SERVER="${ECR_REGISTRY}/${APP_REPO_NAME}:discovery-server-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-hystrix-dashboard/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_HYSTRIX_DASHBOARD="${ECR_REGISTRY}/${APP_REPO_NAME}:hystrix-dashboard-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-vets-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VETS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:vets-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    MVN_VERSION=sh(script:'. ${WORKSPACE}/spring-petclinic-visits-service/target/maven-archiver/pom.properties && echo $version', returnStdout:true).trim()
+                    env.IMAGE_TAG_VISITS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:visits-service-v${MVN_VERSION}-b${BUILD_NUMBER}"
+                    env.IMAGE_TAG_GRAFANA_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:grafana-service"
+                    env.IMAGE_TAG_PROMETHEUS_SERVICE="${ECR_REGISTRY}/${APP_REPO_NAME}:prometheus-service"
+                }
+            }
+        }
+        stage('Build App Production Docker Images') {
+            steps {
+                echo 'Building App Production Images'
+                sh ". ./jenkins/build-prod-docker-images-for-ecr.sh"
+                sh 'docker image ls'
+            }
+        }
+        stage('Push Images to ECR Repo') {
+            steps {
+                echo "Pushing ${APP_NAME} App Images to ECR Repo"
+                sh ". ./jenkins/push-prod-docker-images-to-ecr.sh"
+            }
+        }
+        stage('Deploy App on Petclinic Kubernetes Cluster'){
+            steps {
+                echo 'Deploying App on K8s Cluster'
+                sh ". ./jenkins/deploy_app_on_prod_environment.sh"
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Deleting all local images'
+            sh 'docker image prune -af'
+        }
+    }
+}
+```
+
+* Commit the change, then push the script to the remote repo.
+
+``` bash
+git add .
+git commit -m 'added jenkinsfile petclinic-production for main branch'
+git push --set-upstream origin feature/msp-28
+git checkout release
+git merge feature/msp-28
+git push origin release
+```
+
+* Merge `release` into `main` branch to build and deploy the app on `Production environment` with pipeline.
+
+```bash
+git checkout main
+git merge release
+git push origin main
+```
+
+* Create a `Production Pipeline` on Jenkins with name of `petclinic-prod` with following script and configure a `github-webhook` to trigger the pipeline every `commit` on `main` branch. `Petclinic production pipeline` should be deployed on permanent prod-environment on `petclinic-cluster` Kubernetes cluster under `petclinic-prod-ns` namespace.
+
+```yml
+- job name: petclinic-prod
+- job type: pipeline
+- Source Code Management: Git
+      Repository URL: https://github.com/[your-github-account]/petclinic-microservices.git
+- Branches to build:
+      Branch Specifier (blank for 'any'): */main
+- Build triggers: GitHub hook trigger for GITScm polling
+- Pipeline:
+      Script Path: jenkins/jenkinsfile-petclinic-prod
+```
+* Click `save`.
+* Click `Build Now`
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 29 - Setting Domain Name and TLS for Production Pipeline with Route 53
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Create `feature/msp-29` branch from `main`.
+
+``` bash
+git checkout main
+git branch feature/msp-29
+git checkout feature/msp-29
+```
+
+* Create an `A` record of `petclinic.clarusway.us` in your hosted zone (in our case `clarusway.us`) using AWS Route 53 domain registrar and bind it to your `petclinic cluster`.
+
+* Configure TLS(SSL) certificate for `petclinic.clarusway.us` using `cert-manager` on petclinic K8s cluster with the following steps.
+
+* Install the `cert-manager` on petclinic cluster. See [Cert-Manager info](https://cert-manager.io/docs/).
+
+  * Create the namespace for cert-manager
+
+  ```bash
+    kubectl create namespace cert-manager
+  ```
+
+  * Add the Jetstack Helm repository.
+
+  ```bash
+  helm repo add jetstack https://charts.jetstack.io
+  ```
+
+  * Update your local Helm chart repository.
+
+  ```bash
+  helm repo update
+  ```
+
+  * Install the `Custom Resource Definition` resources separately
+
+  ```bash
+  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+  ```
+
+  * Install the cert-manager Helm chart
+
+  ```bash
+  helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version v1.12.0
+  ```
+
+  * Verify that the cert-manager is deployed correctly.
+
+  ```bash
+  kubectl get pods --namespace cert-manager -o wide
+  ```
+
+* Create `ClusterIssuer` with name of `tls-cluster-issuer-prod.yml` for the production certificate through `Let's Encrypt ACME` (Automated Certificate Management Environment) with following content by importing YAML file on Ranhcer and save it under `k8s` folder. *Note that certificate will only be created after annotating and updating the `Ingress` resource.*
+
+```yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: callahan@clarusway.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+```
+
+* Check if `ClusterIssuer` resource is created.
+
+```bash
+kubectl apply -f tls-cluster-issuer-prod.yml
+kubectl get clusterissuers letsencrypt-prod -n cert-manager -o wide
+```
+
+- To manage EKS cluster from Rancher, start Rancher server and login.
+
+- Next, attach policies `AmazonEKSClusterPolicy`, `AmazonEKSServicePolicy`, `AmazonEKS_CNI_Policy`, `AmazonEKSVPCResourceController`  to Rancher server iam role. (`petclinic-tr-rke-role`)
+
+- To import `petclinic-eks` to Rancher, go to the Rancher dashboard. Select tabs orderly; ``Cluster Management -> Import Existing -> Generic``
+```yml
+Cluster Name: petclinic-eks
+```
+``-> Create -> Registration -> copy kubectl command (Run the kubectl command below on an existing Kubernetes cluster running a supported Kubernetes version to import it into Rancher)``
+
+* Issue production Let’s Encrypt Certificate by annotating and adding the `api-gateway` ingress resource with following through Rancher.
+
+```yaml
+metadata:
+  name: api-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - petclinic.clarusway.us
+    secretName: petclinic-tls
+```
+
+* Check and verify that the TLS(SSL) certificate created and successfully issued to `petclinic.clarusway.us` by checking URL of `https://petclinic.clarusway.us`
+
+* Commit the change, then push the tls script to the remote repo.
+
+``` bash
+git add .
+git commit -m 'added tls scripts for petclinic-production'
+git push --set-upstream origin feature/msp-29
+git checkout main
+git merge feature/msp-29
+git push origin main
+```
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+## MSP 30 - Monitoring with Prometheus and Grafana
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+* Change the port of Prometheus Service to `9090` and so that Grafana can scrape the data.
+
+* Create a Kubernetes `NodePort` Service for Prometheus Server on Rancher to expose it.
+
+- Go to the `Service Discovery -> Services -> prometheus -> edit yaml` page and make changes.
+
+```yml
+port: 9090
+nodePort: 30002
+type: NodePort
+```
+   
+* Create a Kubernetes `NodePort` Service for Grafana Server on Rancher to expose it.
+
+- Go to the `Service Discovery -> Services -> grafana -> edit yaml` page and make changes.
+
+```yml
+nodePort: 30003
+type: NodePort
+```
+
+- Go to the worker nodes security group and open ports `30002 and 30003` to anywhere.
+
+- Next, go to the browser and view monitoring services.
+
+- Delete  EKS cluster via `eksctl`. It will take a while.
+
+```bash
+eksctl delete cluster -f cluster.yaml
 ```
