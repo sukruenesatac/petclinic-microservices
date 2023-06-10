@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
+    kompose.image-pull-secret: regcred
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: grafana-server
+  name: grafana-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: grafana-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
+        kompose.image-pull-secret: regcred
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/k8s-default: "true"
+        io.kompose.service: grafana-server
+    spec:
+      containers:
+        - image: '{{ .Values.IMAGE_TAG_GRAFANA_SERVICE }}'
+          name: grafana-server
+          ports:
+            - containerPort: 3000
+          resources: {}
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+status: {}
